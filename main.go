@@ -4,8 +4,6 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-var gamepadAxisCount int
-
 var meshAtlases []rl.Texture2D
 var atlasNames []string
 var tileAtlas rl.Texture2D
@@ -45,8 +43,10 @@ var saveButtons []Button
 var deleteWorldButtons []Button
 var createWorldButtons []Button
 
+var saves []Save
 var selectedSaveId int
 var loadedSaveId int
+var createdSave Save
 
 func main() {
 	rl.SetConfigFlags(rl.FlagMsaa4xHint + rl.FlagVsyncHint + rl.FlagWindowResizable)
@@ -58,8 +58,7 @@ func main() {
 	selectedSaveId = -1
 	worldsSection = -1
 
-	// Controller
-	gamepadAxisCount = int(rl.GetGamepadAxisCount(0))
+	createdSave.Name = "save2"
 
 	for !rl.WindowShouldClose() {
 		if clientState == MAIN_MENU {
@@ -90,10 +89,10 @@ func main() {
 				mapName = "map1"
 
 				// Map
-				// GenerateMapFromImage(mapName, saveName)
-				gameMap = LoadMapFromJSON(saveButtons[loadedSaveId].Text)
-				// GenerateSeedMap(gameMap.Width, gameMap.Height, 0, saveName)
-				// seedMap = LoadSeedMapFromJSON(saveName)
+				// GenerateMapFromImage(saves[loadedSaveId].MapName, saves[loadedSaveId].Name)
+				gameMap = LoadMapFromJSON(saves[loadedSaveId].Name)
+				// GenerateSeedMap(gameMap.Width, gameMap.Height, 0, saves[loadedSaveId].Name)
+				// seedMap = LoadSeedMapFromJSON(saves[loadedSaveId].Name)
 				meshTileMaps = GenerateMeshTileMaps()
 
 				// Player and Camera

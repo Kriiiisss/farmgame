@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -42,7 +43,7 @@ func LoadButtons() {
 			},
 			rl.Rectangle{},
 			false,
-			false,
+			true,
 		},
 		{
 			"Load World",
@@ -118,6 +119,13 @@ func LoadButtons() {
 			"Create",
 			0,
 			func() {
+				err := os.Mkdir("./saves/"+createdSave.Name, os.ModeDir)
+				if err != nil {
+					log.Fatal(err)
+				}
+				GenerateMapFromImage(createdSave.MapName, createdSave.Name)
+				createdSave.Name = ""
+				createdSave.MapName = ""
 				worldsSection = MNGWORLD_WELCOME
 			},
 			rl.Rectangle{},
@@ -128,6 +136,8 @@ func LoadButtons() {
 			"Cancel",
 			0,
 			func() {
+				createdSave.Name = ""
+				createdSave.MapName = ""
 				worldsSection = MNGWORLD_WELCOME
 			},
 			rl.Rectangle{},
@@ -159,6 +169,7 @@ func RefreshSaves() {
 		log.Fatal(err)
 	}
 	saveButtons = []Button{}
+	saves = []Save{}
 	for dirEntry := range dirEntries {
 		saveButtons = append(saveButtons, Button{
 			dirEntries[dirEntry].Name(),
@@ -173,6 +184,12 @@ func RefreshSaves() {
 			false,
 			true,
 		})
+		saves = append(saves, Save{
+			dirEntries[dirEntry].Name(),
+			"map1",
+		})
+		fmt.Println(len(saves))
 	}
+
 	selectedSaveId = -1
 }

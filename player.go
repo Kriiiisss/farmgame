@@ -74,10 +74,6 @@ func HandlePlayerMovement() {
 		movement.X += player.MovementSpeed
 	}
 
-	if rl.IsGamepadAvailable(0) {
-
-	}
-
 	if movement.X != 0 && movement.Y != 0 {
 		movement.X = movement.X / SQRT2
 		movement.Y = movement.Y / SQRT2

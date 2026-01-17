@@ -62,3 +62,8 @@ type Button struct {
 	Hovered   bool
 	Available bool
 }
+
+type Save struct {
+	Name    string
+	MapName string
+}
