@@ -94,8 +94,8 @@ func InteractWithTile(x, y int) {
 
 	var tileReplacement Tile
 	var placeableReplacement Placeable
-	var tile = &gameMap.Tiles[int(tilePos.Y)][int(tilePos.X)]
-	var placeable = &gameMap.Placeables[int(tilePos.Y)][int(tilePos.X)]
+	var tile = &gameMap.Tiles[int(mouseTilePos.Y)][int(mouseTilePos.X)]
+	var placeable = &gameMap.Placeables[int(mouseTilePos.Y)][int(mouseTilePos.X)]
 	tileReplaced := false
 	placeableReplaced := false
 	itemCategory := player.Inventory[player.SelectedSlot].CategoryId

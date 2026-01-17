@@ -134,7 +134,7 @@ const (
 // Create world buttons
 const (
 	BTN_CREATE = iota
-	BTN_MNGWORLD_CANCEL
+	BTN_CREWORLD_CANCEL
 )
 
 // Delete world buttons

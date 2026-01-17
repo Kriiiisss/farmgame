@@ -4,16 +4,15 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-var gamepadAxis int
+var gamepadAxisCount int
 
+var meshAtlases []rl.Texture2D
+var atlasNames []string
 var tileAtlas rl.Texture2D
 var itemAtlas rl.Texture2D
 var HUDAtlas rl.Texture2D
 var placeableAtlas rl.Texture2D
-var atlasNames []string
-var meshAtlases []rl.Texture2D
-var HUDTextures []rl.Texture2D
-var placeableTextures []rl.Texture2D
+
 var tiles []Tile
 var items []Item
 var placeables []Placeable
@@ -24,21 +23,20 @@ var seedMap [][]int
 var mapName string
 
 var player Player
+var playerCam rl.Camera2D
+var freeCam rl.Camera2D
+var currentCam rl.Camera2D
 
 var worldMousePos rl.Vector2
 var playerCamOn bool
 var debugMode bool
-var playerCam rl.Camera2D
-var freeCam rl.Camera2D
-var currentCam rl.Camera2D
-var tilePos rl.Vector2
+var mouseTilePos rl.Vector2
 
 var clientState int
 var menuSection int
 var worldsSection int
 var optionsSection int
-var mapLoaded bool
-var fontsize int32
+var defaultMenuFontsize int32
 
 var welcomeButtons []Button
 var manageWorldsButtons []Button
@@ -59,6 +57,9 @@ func main() {
 	LoadButtons()
 	selectedSaveId = -1
 	worldsSection = -1
+
+	// Controller
+	gamepadAxisCount = int(rl.GetGamepadAxisCount(0))
 
 	for !rl.WindowShouldClose() {
 		if clientState == MAIN_MENU {
@@ -106,7 +107,7 @@ func main() {
 
 			if clientState == IN_A_WORLD {
 				worldMousePos = rl.GetScreenToWorld2D(rl.GetMousePosition(), currentCam)
-				tilePos = GetTilePos(worldMousePos)
+				mouseTilePos = GetTilePos(worldMousePos)
 
 				if rl.IsKeyPressed(rl.KeyF5) {
 					playerCamOn = !playerCamOn
@@ -126,8 +127,8 @@ func main() {
 				HandleInventory()
 
 				if rl.IsMouseButtonPressed(rl.MouseButtonLeft) {
-					InteractWithTile(int(tilePos.Y), int(tilePos.X))
-					UpdateMeshTileMaps(rl.Rectangle{X: tilePos.X, Y: tilePos.Y, Width: 2, Height: 2})
+					InteractWithTile(int(mouseTilePos.Y), int(mouseTilePos.X))
+					UpdateMeshTileMaps(rl.Rectangle{X: mouseTilePos.X, Y: mouseTilePos.Y, Width: 2, Height: 2})
 				}
 
 				rl.BeginDrawing()

@@ -21,40 +21,48 @@ func DrawDebug() {
 	rl.DrawText(fmt.Sprintf("Zoom: %f", currentCam.Zoom), 2*DEBUG_PADDING, 4*DEBUG_PADDING+2*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
 	rl.DrawText("Mouse Position:", 2*DEBUG_PADDING, 5*DEBUG_PADDING+3*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
 	rl.DrawText(fmt.Sprintf("> World %.0f %.0f", worldMousePos.X, worldMousePos.Y), 2*DEBUG_PADDING, 6*DEBUG_PADDING+4*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
-	rl.DrawText(fmt.Sprintf("> Tile %.0f %.0f", tilePos.X, tilePos.Y), 2*DEBUG_PADDING, 7*DEBUG_PADDING+5*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
-	rl.DrawText(fmt.Sprintf("> %s, %s", gameMap.Tiles[int(tilePos.Y)][int(tilePos.X)].Name, gameMap.Placeables[int(tilePos.Y)][int(tilePos.X)].Name), 2*DEBUG_PADDING, 8*DEBUG_PADDING+6*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
+	rl.DrawText(fmt.Sprintf("> Tile %.0f %.0f", mouseTilePos.X, mouseTilePos.Y), 2*DEBUG_PADDING, 7*DEBUG_PADDING+5*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
+	rl.DrawText(fmt.Sprintf("> %s, %s", gameMap.Tiles[int(mouseTilePos.Y)][int(mouseTilePos.X)].Name, gameMap.Placeables[int(mouseTilePos.Y)][int(mouseTilePos.X)].Name), 2*DEBUG_PADDING, 8*DEBUG_PADDING+6*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
 
 	rl.BeginMode2D(currentCam)
 
-	rl.DrawRectangleLines(int32(tilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE-0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
-	rl.DrawText(fmt.Sprintf("%.0f, %.0f", tilePos.X, tilePos.Y), int32(tilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE-0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
-	rl.DrawRectangleLines(int32(tilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE-0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
-	rl.DrawText(fmt.Sprintf("%.0f, %.0f", tilePos.X+1, tilePos.Y), int32(tilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE-0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
-	rl.DrawRectangleLines(int32(tilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE+0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
-	rl.DrawText(fmt.Sprintf("%.0f, %.0f", tilePos.X, tilePos.Y+1), int32(tilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE+0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
-	rl.DrawRectangleLines(int32(tilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE+0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
-	rl.DrawText(fmt.Sprintf("%.0f, %.0f", tilePos.X+1, tilePos.Y+1), int32(tilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(tilePos.Y*TILE_SIZE+0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
+	rl.DrawRectangleLines(int32(mouseTilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE-0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
+	rl.DrawText(fmt.Sprintf("%.0f, %.0f", mouseTilePos.X, mouseTilePos.Y), int32(mouseTilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE-0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
+	rl.DrawRectangleLines(int32(mouseTilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE-0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
+	rl.DrawText(fmt.Sprintf("%.0f, %.0f", mouseTilePos.X+1, mouseTilePos.Y), int32(mouseTilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE-0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
+	rl.DrawRectangleLines(int32(mouseTilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE+0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
+	rl.DrawText(fmt.Sprintf("%.0f, %.0f", mouseTilePos.X, mouseTilePos.Y+1), int32(mouseTilePos.X*TILE_SIZE-0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE+0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
+	rl.DrawRectangleLines(int32(mouseTilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE+0.5*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Blue)
+	rl.DrawText(fmt.Sprintf("%.0f, %.0f", mouseTilePos.X+1, mouseTilePos.Y+1), int32(mouseTilePos.X*TILE_SIZE+0.5*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE+0.5*TILE_SIZE), DEBUG_FONTSIZE_TILE, rl.White)
 
-	rl.DrawRectangleLines(int32(tilePos.X*TILE_SIZE), int32(tilePos.Y*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Red)
+	rl.DrawRectangleLines(int32(mouseTilePos.X*TILE_SIZE), int32(mouseTilePos.Y*TILE_SIZE), int32(TILE_SIZE), int32(TILE_SIZE), rl.Red)
 
 	rl.EndMode2D()
 }
 
 func UpdateMainMenu() {
-	fontsize = int32(rl.GetRenderHeight()) / 20
+	defaultMenuFontsize = int32(rl.GetRenderHeight()) / 20
 	mousePos := rl.GetMousePosition()
 
 	if rl.IsWindowResized() {
-		for saveButton := range saveButtons {
-			saveButtons[saveButton].Fontsize = fontsize * 20 / 28
+		for button := range saveButtons {
+			saveButtons[button].Fontsize = defaultMenuFontsize * 20 / 28
 		}
-		welcomeButtons[BTN_MANAGEWORLDS].Fontsize = fontsize
-		welcomeButtons[BTN_OPTIONS].Fontsize = fontsize
-		manageWorldsButtons[BTN_LOADWORLD].Fontsize = fontsize
-		manageWorldsButtons[BTN_DELETEWORLD].Fontsize = fontsize
-		manageWorldsButtons[BTN_CREATEWORLD].Fontsize = fontsize
-		manageWorldsButtons[BTN_REFRESH].Fontsize = fontsize
-		optionsButtons[BTN_VOLUME].Fontsize = fontsize
+		for button := range welcomeButtons {
+			welcomeButtons[button].Fontsize = defaultMenuFontsize
+		}
+		for button := range manageWorldsButtons {
+			manageWorldsButtons[button].Fontsize = defaultMenuFontsize
+		}
+		for button := range optionsButtons {
+			optionsButtons[button].Fontsize = defaultMenuFontsize
+		}
+		for button := range deleteWorldButtons {
+			deleteWorldButtons[button].Fontsize = defaultMenuFontsize
+		}
+		for button := range createWorldButtons {
+			createWorldButtons[button].Fontsize = defaultMenuFontsize
+		}
 	}
 
 	for button := range welcomeButtons {
@@ -82,7 +90,7 @@ func UpdateMainMenu() {
 			manageWorldsButtons[button].Hitbox.Width = float32(length)
 			manageWorldsButtons[button].Hitbox.Height = float32(manageWorldsButtons[button].Fontsize)
 			manageWorldsButtons[button].Hitbox.X = 0.15*float32(rl.GetRenderWidth())*float32(1+button%2) + 0.275*float32(button%2*rl.GetRenderWidth())
-			manageWorldsButtons[button].Hitbox.Y = 0.65*float32(rl.GetRenderHeight()) + 0.05*float32(rl.GetRenderHeight())*float32(1+button/2) + float32(button/2*int(fontsize))
+			manageWorldsButtons[button].Hitbox.Y = 0.65*float32(rl.GetRenderHeight()) + 0.05*float32(rl.GetRenderHeight())*float32(1+button/2) + float32(button/2*int(defaultMenuFontsize))
 		}
 
 		if rl.CheckCollisionPointRec(mousePos, manageWorldsButtons[button].Hitbox) {
@@ -120,7 +128,7 @@ func DrawMainMenu() {
 	switch menuSection {
 	case WELCOME:
 		{
-			rl.DrawText("Farmgame", int32(rl.GetRenderWidth()/2)-rl.MeasureText("Farmgame", int32(rl.GetRenderHeight())/8)/2, int32(rl.GetRenderHeight())/12, int32(float32(fontsize)*2.5), rl.White)
+			rl.DrawText("Farmgame", int32(rl.GetRenderWidth()/2)-rl.MeasureText("Farmgame", int32(rl.GetRenderHeight())/8)/2, int32(rl.GetRenderHeight())/12, int32(float32(defaultMenuFontsize)*2.5), rl.White)
 			for button := range welcomeButtons {
 				DrawButton(welcomeButtons[button])
 			}
