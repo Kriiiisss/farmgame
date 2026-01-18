@@ -135,7 +135,6 @@ func UpdateMainMenu() {
 			createWorldButtons[button].Hovered = true
 			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) && createWorldButtons[button].Available {
 				createWorldButtons[button].Click()
-				selectedSaveId = button
 			}
 		} else {
 			createWorldButtons[button].Hovered = false
@@ -155,7 +154,6 @@ func UpdateMainMenu() {
 			deleteWorldButtons[button].Hovered = true
 			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) && deleteWorldButtons[button].Available {
 				deleteWorldButtons[button].Click()
-				selectedSaveId = button
 			}
 		} else {
 			deleteWorldButtons[button].Hovered = false
@@ -171,7 +169,7 @@ func UpdateMainMenu() {
 	}
 
 	if menuSection == MANAGE_WORLDS && worldsSection == CREATE_NEW_WORLD {
-		HandleTextInput(&createdSave.Name)
+		HandleTextInput(&createdSave.Name, 48)
 	}
 }
 
@@ -193,17 +191,24 @@ func DrawMainMenu() {
 					for button := range manageWorldsButtons {
 						DrawButton(manageWorldsButtons[button])
 					}
-					for button := range saveButtons {
-						rl.DrawText(saveButtons[button].Text, int32(saveButtons[button].Hitbox.X), int32(saveButtons[button].Hitbox.Y), int32(saveButtons[button].Fontsize), rl.White)
-						if button == selectedSaveId {
+					for saveId := range saves {
+						if saveId == selectedSaveId {
 							rl.DrawRectangleLines(
-								int32(saveButtons[button].Hitbox.X-padding),
-								int32(saveButtons[button].Hitbox.Y-padding),
-								int32(saveButtons[button].Hitbox.Width+2*padding),
-								int32(saveButtons[button].Hitbox.Height+2*padding),
+								int32(saveButtons[saveId].Hitbox.X-padding),
+								int32(saveButtons[saveId].Hitbox.Y-padding),
+								int32(saveButtons[saveId].Hitbox.Width+2*padding),
+								int32(saveButtons[saveId].Hitbox.Height+2*padding),
 								rl.White,
 							)
 						}
+						rl.DrawText(saveButtons[saveId].Text, int32(saveButtons[saveId].Hitbox.X), int32(saveButtons[saveId].Hitbox.Y), int32(saveButtons[saveId].Fontsize), rl.White)
+						rl.DrawText(
+							saves[saveId].DisplayTime,
+							int32(saveButtons[saveId].Hitbox.X+saveButtons[saveId].Hitbox.Width-float32(rl.MeasureText(saves[saveId].DisplayTime, saveButtons[saveId].Fontsize))),
+							int32(saveButtons[saveId].Hitbox.Y),
+							int32(saveButtons[saveId].Fontsize),
+							rl.Gray,
+						)
 					}
 				}
 			case CREATE_NEW_WORLD:
@@ -223,7 +228,7 @@ func DrawMainMenu() {
 				}
 			case DELETE_WORLD:
 				{
-					text := fmt.Sprintf(`Delete "%s"?`, saves[loadedSaveId].Name)
+					text := fmt.Sprintf(`Delete "%s"?`, saves[selectedSaveId].Name)
 					rl.DrawText(text, int32(rl.GetRenderWidth())/2-rl.MeasureText(text, defaultMenuFontsize)/2, int32(rl.GetRenderHeight()/3), defaultMenuFontsize, rl.White)
 					for button := range deleteWorldButtons {
 						DrawButton(deleteWorldButtons[button])

@@ -4,6 +4,9 @@ import (
 	"log"
 	"os"
 	"slices"
+	"strconv"
+	"strings"
+	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -125,9 +128,9 @@ func LoadButtons() {
 			0,
 			func() {
 				nameIllegal := slices.Contains(illegalNames, createdSave.Name)
-				if !nameIllegal {
-					for character := range createdSave.Name {
-						if slices.Contains(illegalRunes, rune(createdSave.Name[character])) {
+				if len(saves) > 0 {
+					for saveId := range saves {
+						if saves[saveId].Name == createdSave.Name {
 							nameIllegal = true
 							break
 						}
@@ -138,7 +141,7 @@ func LoadButtons() {
 					if err != nil {
 						log.Fatal(err)
 					}
-					GenerateMapFromImage(createdSave.MapName, createdSave.Name)
+					GenerateSaveFiles(createdSave.Name, createdSave.MapName)
 					createdSave.Name = ""
 					createdSave.MapName = ""
 					RefreshSaves()
@@ -201,9 +204,23 @@ func RefreshSaves() {
 			false,
 			true,
 		})
+		metadataBytes, err := os.ReadFile("./saves/" + dirEntries[dirEntry].Name() + "/metadata")
+		if err != nil {
+			log.Fatal(err)
+		}
+		metadata := string(metadataBytes)
+		metadataLines := strings.Split(metadata, "\n")
+		lastLaunchTimeInt, err := strconv.ParseInt(metadataLines[0], 10, 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+		lastLaunchTime := time.Unix(0, lastLaunchTimeInt)
+
 		saves = append(saves, Save{
 			dirEntries[dirEntry].Name(),
 			"map1",
+			lastLaunchTime,
+			lastLaunchTime.Format("2006-01-02 15:04:05"),
 		})
 	}
 	selectedSaveId = -1

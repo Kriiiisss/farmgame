@@ -1,6 +1,10 @@
 package main
 
-import rl "github.com/gen2brain/raylib-go/raylib"
+import (
+	"time"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
+)
 
 type Tile struct {
 	Name      string
@@ -64,6 +68,8 @@ type Button struct {
 }
 
 type Save struct {
-	Name    string
-	MapName string
+	Name        string
+	MapName     string
+	LastOpened  time.Time
+	DisplayTime string
 }

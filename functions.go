@@ -1,6 +1,7 @@
 package main
 
 import (
+	"slices"
 	"unicode/utf8"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -28,9 +29,9 @@ func Ceil(number float32) int {
 	return int(number) + 1
 }
 
-func HandleTextInput(text *string) {
+func HandleTextInput(text *string, maxLength int) {
 	character := rl.GetCharPressed()
-	if character != 0 {
+	if character != 0 && !slices.Contains(illegalRunes, rune(character)) && len(*text) < 48 {
 		*text += string(character)
 	}
 	if rl.GetKeyPressed() == rl.KeyBackspace {

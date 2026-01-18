@@ -6,6 +6,8 @@ import (
 	"log"
 	"math"
 	"os"
+	"strings"
+	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -14,11 +16,13 @@ func GetTilePos(worldPosition rl.Vector2) rl.Vector2 {
 	return rl.Vector2{X: Clamp(float32(Floor(worldPosition.X/TILE_SIZE)), 0, float32(gameMap.Width-1)), Y: Clamp(float32(Floor(worldPosition.Y/TILE_SIZE)), 0, float32(gameMap.Height-1))}
 }
 
-func GenerateMapFromImage(imageName string, saveName string) {
+func GenerateSaveFiles(saveName string, imageName string) {
 	image := rl.LoadImage("./assets/map images/" + imageName + ".png")
 
-	outputTilesPath := "./saves/" + saveName + "/map.json"
-	outputPlaceablesPath := "./saves/" + saveName + "/placeables.json"
+	savePath := "./saves/" + saveName
+	tilesPath := savePath + "/map.json"
+	placeablesPath := savePath + "/placeables.json"
+	metadataPath := savePath + "/metadata"
 
 	var loadedTiles [][]Tile
 	var loadedPlaceables [][]Placeable
@@ -34,33 +38,55 @@ func GenerateMapFromImage(imageName string, saveName string) {
 
 	jsonTiles, err := json.Marshal(loadedTiles)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	jsonPlaceables, err := json.Marshal(loadedPlaceables)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
-	_, err = os.Create(outputTilesPath)
+	f1, err := os.Create(tilesPath)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	err = os.WriteFile(outputTilesPath, jsonTiles, os.ModeAppend)
+	err = os.WriteFile(tilesPath, jsonTiles, os.ModeAppend)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	_, err = os.Create(outputPlaceablesPath)
+	f2, err := os.Create(placeablesPath)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
-	err = os.WriteFile(outputPlaceablesPath, jsonPlaceables, os.ModeAppend)
+	err = os.WriteFile(placeablesPath, jsonPlaceables, os.ModeAppend)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
-	fmt.Printf("Generated Tile Map!\n")
+	f3, err := os.Create(metadataPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fileLines := []string{
+		fmt.Sprintf("%d", time.Now().UTC().UnixNano()),
+	}
+	var fileContents strings.Builder
+	for line := range fileLines {
+		fileContents.WriteString(fileLines[line] + "\n")
+	}
+	fileContentsBytes := []byte(fileContents.String())
+
+	err = os.WriteFile(metadataPath, fileContentsBytes, os.ModeAppend)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Print("Generated save files for " + `"` + saveName + `"` + ".\n")
 
 	rl.UnloadImage(image)
+	f1.Close()
+	f2.Close()
+	f3.Close()
 }
 
 func GenerateSeedMap(gameMapWidth, gameMapHeight, seed int, saveName string) {
@@ -378,8 +404,8 @@ func DrawMeshTileMaps(camera *rl.Camera2D) {
 }
 
 func SaveMap(saveName string) {
-	outputTilesPath := "./saves/" + saveName + "/map.json"
-	outputPlaceablesPath := "./saves/" + saveName + "/placeables.json"
+	tilesPath := "./saves/" + saveName + "/map.json"
+	placeablesPath := "./saves/" + saveName + "/placeables.json"
 
 	jsonTiles, err := json.Marshal(gameMap.Tiles)
 	if err != nil {
@@ -390,19 +416,19 @@ func SaveMap(saveName string) {
 		log.Fatal(err)
 	}
 
-	_, err = os.Create(outputTilesPath)
+	_, err = os.Create(tilesPath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = os.WriteFile(outputTilesPath, jsonTiles, os.ModeAppend)
+	err = os.WriteFile(tilesPath, jsonTiles, os.ModeAppend)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = os.Create(outputPlaceablesPath)
+	_, err = os.Create(placeablesPath)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = os.WriteFile(outputPlaceablesPath, jsonPlaceables, os.ModeAppend)
+	err = os.WriteFile(placeablesPath, jsonPlaceables, os.ModeAppend)
 	if err != nil {
 		log.Fatal(err)
 	}

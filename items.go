@@ -15,11 +15,6 @@ func LoadItems() []Item {
 			IRON_HOE,
 		},
 		{
-			"Iron Shovel",
-			SHOVEL,
-			IRON_SHOVEL,
-		},
-		{
 			"Grass Seeds",
 			SOIL_SEED,
 			GRASS_SEEDS,
@@ -77,11 +72,10 @@ func LoadInventory() {
 	}
 
 	player.Inventory[0] = items[IRON_HOE]
-	player.Inventory[1] = items[IRON_SHOVEL]
-	player.Inventory[2] = items[GRASS_SEEDS]
-	player.Inventory[3] = items[TALL_GRASS_STARTER]
-	player.Inventory[4] = items[SAPLING]
-	player.Inventory[5] = items[DELETE]
+	player.Inventory[1] = items[GRASS_SEEDS]
+	player.Inventory[2] = items[TALL_GRASS_STARTER]
+	player.Inventory[3] = items[SAPLING]
+	player.Inventory[4] = items[DELETE]
 	player.Inventory[9] = items[GRASS_TILE]
 	player.Inventory[10] = items[SOIL_TILE]
 	player.Inventory[11] = items[WATER_TILE]
