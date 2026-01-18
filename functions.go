@@ -1,5 +1,11 @@
 package main
 
+import (
+	"unicode/utf8"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
+)
+
 func IsInRange(number int, min int, max int) bool {
 	return (number >= min && number <= max)
 }
@@ -20,4 +26,15 @@ func Floor(number float32) int {
 
 func Ceil(number float32) int {
 	return int(number) + 1
+}
+
+func HandleTextInput(text *string) {
+	character := rl.GetCharPressed()
+	if character != 0 {
+		*text += string(character)
+	}
+	if rl.GetKeyPressed() == rl.KeyBackspace {
+		_, lastRuneLength := utf8.DecodeLastRuneInString(*text)
+		*text = (*text)[:len(*text)-lastRuneLength]
+	}
 }

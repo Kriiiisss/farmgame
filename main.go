@@ -58,9 +58,19 @@ func main() {
 	selectedSaveId = -1
 	worldsSection = -1
 
-	createdSave.Name = "save2"
+	// Assets
+	tileAtlas = rl.LoadTexture("./assets/textures/tile_atlas.png")
+	itemAtlas = rl.LoadTexture("./assets/textures/item_atlas.png")
+	HUDAtlas = rl.LoadTexture("./assets/textures/hud_atlas.png")
+	placeableAtlas = rl.LoadTexture("./assets/textures/placeable_atlas.png")
+	atlasNames = []string{"soil", "stone", "grass", "bridge"}
+	meshAtlases = LoadMeshAtlases()
+	tiles = LoadTiles()
+	items = LoadItems()
+	placeables = loadPlaceables()
 
 	for !rl.WindowShouldClose() {
+		createdSave.MapName = "map1"
 		if clientState == MAIN_MENU {
 			UpdateMainMenu()
 			rl.BeginDrawing()
@@ -73,26 +83,13 @@ func main() {
 		if clientState == LOADING_TO_WORLD || clientState == IN_A_WORLD {
 			// Load assets and map
 			if clientState == LOADING_TO_WORLD {
-				// Assets
-				tileAtlas = rl.LoadTexture("./assets/textures/tile_atlas.png")
-				itemAtlas = rl.LoadTexture("./assets/textures/item_atlas.png")
-				HUDAtlas = rl.LoadTexture("./assets/textures/hud_atlas.png")
-				placeableAtlas = rl.LoadTexture("./assets/textures/placeable_atlas.png")
-				atlasNames = []string{"soil", "stone", "grass", "bridge"}
-				meshAtlases = LoadMeshAtlases()
-				tiles = LoadTiles()
-				items = LoadItems()
-				placeables = loadPlaceables()
 
 				playerCamOn = true
 				debugMode = false
 				mapName = "map1"
 
 				// Map
-				// GenerateMapFromImage(saves[loadedSaveId].MapName, saves[loadedSaveId].Name)
 				gameMap = LoadMapFromJSON(saves[loadedSaveId].Name)
-				// GenerateSeedMap(gameMap.Width, gameMap.Height, 0, saves[loadedSaveId].Name)
-				// seedMap = LoadSeedMapFromJSON(saves[loadedSaveId].Name)
 				meshTileMaps = GenerateMeshTileMaps()
 
 				// Player and Camera

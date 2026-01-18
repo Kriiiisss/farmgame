@@ -127,8 +127,8 @@ func UpdateMainMenu() {
 		if rl.IsWindowResized() {
 			createWorldButtons[button].Hitbox.Width = float32(length)
 			createWorldButtons[button].Hitbox.Height = float32(createWorldButtons[button].Fontsize)
-			createWorldButtons[button].Hitbox.X = 0.15*float32(rl.GetRenderWidth())*float32(1+button%2) + 0.275*float32(button%2*rl.GetRenderWidth())
-			createWorldButtons[button].Hitbox.Y = 0.45*float32(rl.GetRenderHeight()) + 0.05*float32(rl.GetRenderHeight())*float32(1+button/2) + float32(button/2*int(defaultMenuFontsize))
+			createWorldButtons[button].Hitbox.X = 0.3 * float32(rl.GetRenderWidth()) * float32(1+button%2)
+			createWorldButtons[button].Hitbox.Y = 0.5*float32(rl.GetRenderHeight()) + 0.05*float32(rl.GetRenderHeight())*float32(1+button/2) + float32(button/2*int(defaultMenuFontsize))
 		}
 
 		if rl.CheckCollisionPointRec(mousePos, createWorldButtons[button].Hitbox) {
@@ -141,10 +141,41 @@ func UpdateMainMenu() {
 			createWorldButtons[button].Hovered = false
 		}
 	}
+
+	for button := range deleteWorldButtons {
+		length := rl.MeasureText(deleteWorldButtons[button].Text, deleteWorldButtons[button].Fontsize)
+		if rl.IsWindowResized() {
+			deleteWorldButtons[button].Hitbox.Width = float32(length)
+			deleteWorldButtons[button].Hitbox.Height = float32(deleteWorldButtons[button].Fontsize)
+			deleteWorldButtons[button].Hitbox.X = 0.3 * float32(rl.GetRenderWidth()) * float32(1+button%2)
+			deleteWorldButtons[button].Hitbox.Y = 0.45*float32(rl.GetRenderHeight()) + 0.05*float32(rl.GetRenderHeight())*float32(1+button/2) + float32(button/2*int(defaultMenuFontsize))
+		}
+
+		if rl.CheckCollisionPointRec(mousePos, deleteWorldButtons[button].Hitbox) {
+			deleteWorldButtons[button].Hovered = true
+			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) && deleteWorldButtons[button].Available {
+				deleteWorldButtons[button].Click()
+				selectedSaveId = button
+			}
+		} else {
+			deleteWorldButtons[button].Hovered = false
+		}
+	}
+
+	if selectedSaveId == -1 {
+		manageWorldsButtons[BTN_LOADWORLD].Available = false
+		manageWorldsButtons[BTN_DELETEWORLD].Available = false
+	} else {
+		manageWorldsButtons[BTN_LOADWORLD].Available = true
+		manageWorldsButtons[BTN_DELETEWORLD].Available = true
+	}
+
+	if menuSection == MANAGE_WORLDS && worldsSection == CREATE_NEW_WORLD {
+		HandleTextInput(&createdSave.Name)
+	}
 }
 
 func DrawMainMenu() {
-
 	switch menuSection {
 	case WELCOME:
 		{
@@ -155,6 +186,7 @@ func DrawMainMenu() {
 		}
 	case MANAGE_WORLDS:
 		{
+			padding := 0.0075 * float32(rl.GetRenderWidth())
 			switch worldsSection {
 			case MNGWORLD_WELCOME:
 				{
@@ -164,7 +196,6 @@ func DrawMainMenu() {
 					for button := range saveButtons {
 						rl.DrawText(saveButtons[button].Text, int32(saveButtons[button].Hitbox.X), int32(saveButtons[button].Hitbox.Y), int32(saveButtons[button].Fontsize), rl.White)
 						if button == selectedSaveId {
-							padding := 0.0075 * float32(rl.GetRenderWidth())
 							rl.DrawRectangleLines(
 								int32(saveButtons[button].Hitbox.X-padding),
 								int32(saveButtons[button].Hitbox.Y-padding),
@@ -177,7 +208,18 @@ func DrawMainMenu() {
 				}
 			case CREATE_NEW_WORLD:
 				{
-
+					text := "Creating a new world"
+					rl.DrawText(text, int32(rl.GetRenderWidth())/2-rl.MeasureText(text, defaultMenuFontsize)/2, int32(0.3*float32(rl.GetRenderHeight())), defaultMenuFontsize, rl.White)
+					textBox := rl.Rectangle{}
+					textBox.X = 0.3*float32(rl.GetRenderWidth()) - padding
+					textBox.Y = 0.425*float32(rl.GetRenderHeight()) - padding
+					textBox.Width = createWorldButtons[1].Hitbox.X + createWorldButtons[1].Hitbox.Width - createWorldButtons[0].Hitbox.X + 2*padding
+					textBox.Height = float32(defaultMenuFontsize) + 2*padding
+					rl.DrawRectangleLinesEx(textBox, 1, rl.White)
+					rl.DrawText(createdSave.Name, int32(textBox.X+padding), int32(textBox.Y+padding), defaultMenuFontsize, rl.White)
+					for button := range createWorldButtons {
+						DrawButton(createWorldButtons[button])
+					}
 				}
 			case DELETE_WORLD:
 				{

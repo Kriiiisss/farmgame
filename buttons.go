@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"slices"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -43,7 +44,7 @@ func LoadButtons() {
 			},
 			rl.Rectangle{},
 			false,
-			false,
+			true,
 		},
 		{
 			"Load World",
@@ -96,8 +97,12 @@ func LoadButtons() {
 			"Delete",
 			0,
 			func() {
+				err := os.RemoveAll("./saves/" + saves[selectedSaveId].Name)
+				if err != nil {
+					log.Fatal(err)
+				}
+				RefreshSaves()
 				worldsSection = MNGWORLD_WELCOME
-
 			},
 			rl.Rectangle{},
 			false,
@@ -119,14 +124,26 @@ func LoadButtons() {
 			"Create",
 			0,
 			func() {
-				err := os.Mkdir("./saves/"+createdSave.Name, os.ModeDir)
-				if err != nil {
-					log.Fatal(err)
+				nameIllegal := slices.Contains(illegalNames, createdSave.Name)
+				if !nameIllegal {
+					for character := range createdSave.Name {
+						if slices.Contains(illegalRunes, rune(createdSave.Name[character])) {
+							nameIllegal = true
+							break
+						}
+					}
 				}
-				GenerateMapFromImage(createdSave.MapName, createdSave.Name)
-				createdSave.Name = ""
-				createdSave.MapName = ""
-				worldsSection = MNGWORLD_WELCOME
+				if !nameIllegal {
+					err := os.Mkdir("./saves/"+createdSave.Name, os.ModeDir)
+					if err != nil {
+						log.Fatal(err)
+					}
+					GenerateMapFromImage(createdSave.MapName, createdSave.Name)
+					createdSave.Name = ""
+					createdSave.MapName = ""
+					RefreshSaves()
+					worldsSection = MNGWORLD_WELCOME
+				}
 			},
 			rl.Rectangle{},
 			false,
@@ -189,6 +206,5 @@ func RefreshSaves() {
 			"map1",
 		})
 	}
-
 	selectedSaveId = -1
 }
