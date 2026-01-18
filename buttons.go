@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -17,6 +16,7 @@ func LoadButtons() {
 			0,
 			func() {
 				menuSection = MANAGE_WORLDS
+				worldsSection = MNGWORLD_WELCOME
 				RefreshSaves()
 			},
 			rl.Rectangle{},
@@ -43,7 +43,7 @@ func LoadButtons() {
 			},
 			rl.Rectangle{},
 			false,
-			true,
+			false,
 		},
 		{
 			"Load World",
@@ -188,7 +188,6 @@ func RefreshSaves() {
 			dirEntries[dirEntry].Name(),
 			"map1",
 		})
-		fmt.Println(len(saves))
 	}
 
 	selectedSaveId = -1
