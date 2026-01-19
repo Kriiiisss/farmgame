@@ -70,6 +70,7 @@ type Button struct {
 type Save struct {
 	Name        string
 	MapName     string
-	LastOpened  time.Time
+	LastPlayed  time.Time
 	DisplayTime string
+	MenuButton  Button
 }

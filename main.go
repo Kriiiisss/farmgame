@@ -39,7 +39,6 @@ var defaultMenuFontsize int32
 var welcomeButtons []Button
 var manageWorldsButtons []Button
 var optionsButtons []Button
-var saveButtons []Button
 var deleteWorldButtons []Button
 var createWorldButtons []Button
 
@@ -149,7 +148,8 @@ func main() {
 		}
 	}
 	if clientState == IN_A_WORLD {
-		SaveMap(saveButtons[loadedSaveId].Text)
+		SaveMap(saves[loadedSaveId].Name)
+		UpdateSaveMetadata(saves[loadedSaveId])
 	}
 	rl.CloseWindow()
 }

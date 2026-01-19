@@ -45,8 +45,8 @@ func UpdateMainMenu() {
 	mousePos := rl.GetMousePosition()
 
 	if rl.IsWindowResized() {
-		for button := range saveButtons {
-			saveButtons[button].Fontsize = defaultMenuFontsize * 20 / 28
+		for saveId := range saves {
+			saves[saveId].MenuButton.Fontsize = defaultMenuFontsize * 20 / 28
 		}
 		for button := range welcomeButtons {
 			welcomeButtons[button].Fontsize = defaultMenuFontsize
@@ -103,22 +103,22 @@ func UpdateMainMenu() {
 		}
 	}
 
-	for button := range saveButtons {
+	for saveId := range saves {
 		if rl.IsWindowResized() {
-			saveButtons[button].Hitbox.Width = float32(0.6 * float32(rl.GetRenderWidth()))
-			saveButtons[button].Hitbox.Height = float32(rl.GetRenderHeight() / 28)
-			saveButtons[button].Hitbox.X = 0.15*float32(rl.GetRenderWidth()) + 0.05*float32(rl.GetRenderWidth())
-			saveButtons[button].Hitbox.Y = 0.1 * float32(rl.GetRenderHeight()) * float32(1+button)
+			saves[saveId].MenuButton.Hitbox.Width = float32(0.6 * float32(rl.GetRenderWidth()))
+			saves[saveId].MenuButton.Hitbox.Height = float32(rl.GetRenderHeight() / 28)
+			saves[saveId].MenuButton.Hitbox.X = 0.15*float32(rl.GetRenderWidth()) + 0.05*float32(rl.GetRenderWidth())
+			saves[saveId].MenuButton.Hitbox.Y = 0.1 * float32(rl.GetRenderHeight()) * float32(1+saveId)
 		}
 
-		if rl.CheckCollisionPointRec(mousePos, saveButtons[button].Hitbox) {
-			saveButtons[button].Hovered = true
-			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) && saveButtons[button].Available {
-				saveButtons[button].Click()
-				selectedSaveId = button
+		if rl.CheckCollisionPointRec(mousePos, saves[saveId].MenuButton.Hitbox) {
+			saves[saveId].MenuButton.Hovered = true
+			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) && saves[saveId].MenuButton.Available {
+				saves[saveId].MenuButton.Click()
+				selectedSaveId = saveId
 			}
 		} else {
-			saveButtons[button].Hovered = false
+			saves[saveId].MenuButton.Hovered = false
 		}
 	}
 
@@ -194,19 +194,19 @@ func DrawMainMenu() {
 					for saveId := range saves {
 						if saveId == selectedSaveId {
 							rl.DrawRectangleLines(
-								int32(saveButtons[saveId].Hitbox.X-padding),
-								int32(saveButtons[saveId].Hitbox.Y-padding),
-								int32(saveButtons[saveId].Hitbox.Width+2*padding),
-								int32(saveButtons[saveId].Hitbox.Height+2*padding),
+								int32(saves[saveId].MenuButton.Hitbox.X-padding),
+								int32(saves[saveId].MenuButton.Hitbox.Y-padding),
+								int32(saves[saveId].MenuButton.Hitbox.Width+2*padding),
+								int32(saves[saveId].MenuButton.Hitbox.Height+2*padding),
 								rl.White,
 							)
 						}
-						rl.DrawText(saveButtons[saveId].Text, int32(saveButtons[saveId].Hitbox.X), int32(saveButtons[saveId].Hitbox.Y), int32(saveButtons[saveId].Fontsize), rl.White)
+						rl.DrawText(saves[saveId].MenuButton.Text, int32(saves[saveId].MenuButton.Hitbox.X), int32(saves[saveId].MenuButton.Hitbox.Y), int32(saves[saveId].MenuButton.Fontsize), rl.White)
 						rl.DrawText(
 							saves[saveId].DisplayTime,
-							int32(saveButtons[saveId].Hitbox.X+saveButtons[saveId].Hitbox.Width-float32(rl.MeasureText(saves[saveId].DisplayTime, saveButtons[saveId].Fontsize))),
-							int32(saveButtons[saveId].Hitbox.Y),
-							int32(saveButtons[saveId].Fontsize),
+							int32(saves[saveId].MenuButton.Hitbox.X+saves[saveId].MenuButton.Hitbox.Width-float32(rl.MeasureText(saves[saveId].DisplayTime, saves[saveId].MenuButton.Fontsize))),
+							int32(saves[saveId].MenuButton.Hitbox.Y),
+							int32(saves[saveId].MenuButton.Fontsize),
 							rl.Gray,
 						)
 					}

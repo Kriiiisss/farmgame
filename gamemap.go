@@ -6,8 +6,6 @@ import (
 	"log"
 	"math"
 	"os"
-	"strings"
-	"time"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -16,13 +14,12 @@ func GetTilePos(worldPosition rl.Vector2) rl.Vector2 {
 	return rl.Vector2{X: Clamp(float32(Floor(worldPosition.X/TILE_SIZE)), 0, float32(gameMap.Width-1)), Y: Clamp(float32(Floor(worldPosition.Y/TILE_SIZE)), 0, float32(gameMap.Height-1))}
 }
 
-func GenerateSaveFiles(saveName string, imageName string) {
-	image := rl.LoadImage("./assets/map images/" + imageName + ".png")
+func GenerateSaveFiles(save Save) {
+	image := rl.LoadImage("./assets/map images/" + save.MapName + ".png")
 
-	savePath := "./saves/" + saveName
+	savePath := "./saves/" + save.Name
 	tilesPath := savePath + "/map.json"
 	placeablesPath := savePath + "/placeables.json"
-	metadataPath := savePath + "/metadata"
 
 	var loadedTiles [][]Tile
 	var loadedPlaceables [][]Placeable
@@ -62,31 +59,13 @@ func GenerateSaveFiles(saveName string, imageName string) {
 		log.Fatal(err)
 	}
 
-	f3, err := os.Create(metadataPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	UpdateSaveMetadata(save)
 
-	fileLines := []string{
-		fmt.Sprintf("%d", time.Now().UTC().UnixNano()),
-	}
-	var fileContents strings.Builder
-	for line := range fileLines {
-		fileContents.WriteString(fileLines[line] + "\n")
-	}
-	fileContentsBytes := []byte(fileContents.String())
-
-	err = os.WriteFile(metadataPath, fileContentsBytes, os.ModeAppend)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Print("Generated save files for " + `"` + saveName + `"` + ".\n")
+	fmt.Print("Generated save files for " + `"` + save.Name + `"` + ".\n")
 
 	rl.UnloadImage(image)
 	f1.Close()
 	f2.Close()
-	f3.Close()
 }
 
 func GenerateSeedMap(gameMapWidth, gameMapHeight, seed int, saveName string) {
