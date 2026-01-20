@@ -148,7 +148,7 @@ func main() {
 		}
 	}
 	if clientState == IN_A_WORLD {
-		SaveMap(saves[loadedSaveId].Name)
+		SaveMapJSON(saves[loadedSaveId].Name)
 		UpdateSaveMetadata(saves[loadedSaveId])
 	}
 	rl.CloseWindow()

@@ -31,33 +31,48 @@ func LoadItems() []Item {
 		},
 		{
 			"Delete",
-			OVERWRITE_PLACEABLE,
+			OVERWRITE_TILE,
 			DELETE,
 		},
 		{
 			"Grass Tile",
-			OVERWRITE_PLACEABLE,
+			OVERWRITE_TILE,
 			GRASS_TILE,
 		},
 		{
 			"Soil Tile",
-			OVERWRITE_PLACEABLE,
+			OVERWRITE_TILE,
 			SOIL_TILE,
 		},
 		{
 			"Water Tile",
-			OVERWRITE_PLACEABLE,
+			OVERWRITE_TILE,
 			WATER_TILE,
 		},
 		{
 			"Stone Tile",
-			OVERWRITE_PLACEABLE,
+			OVERWRITE_TILE,
 			STONE_TILE,
 		},
 		{
 			"Bridge Tile",
-			OVERWRITE_PLACEABLE,
+			OVERWRITE_TILE,
 			BRIDGE_TILE,
+		},
+		{
+			"Potato Crop",
+			OVERWRITE_PLACEABLE,
+			POTATO,
+		},
+		{
+			"Carrot Crop",
+			OVERWRITE_PLACEABLE,
+			CARROT,
+		},
+		{
+			"Wheat Crop",
+			OVERWRITE_PLACEABLE,
+			WHEAT,
 		},
 	}
 
@@ -76,6 +91,9 @@ func LoadInventory() {
 	player.Inventory[2] = items[TALL_GRASS_STARTER]
 	player.Inventory[3] = items[SAPLING]
 	player.Inventory[4] = items[DELETE]
+	player.Inventory[5] = items[POTATO]
+	player.Inventory[6] = items[CARROT]
+	player.Inventory[7] = items[WHEAT]
 	player.Inventory[9] = items[GRASS_TILE]
 	player.Inventory[10] = items[SOIL_TILE]
 	player.Inventory[11] = items[WATER_TILE]

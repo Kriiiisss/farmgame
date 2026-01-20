@@ -43,8 +43,8 @@ func DrawPlaceablesAndPlayer(camera *rl.Camera2D) {
 		}
 		for x := Clamp(cameraTopLeft.X-PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x < Clamp(cameraBottomRight.X+PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x++ {
 			placeable := gameMap.Placeables[int(y)][int(x)]
-			if placeable.Name != "" {
-				switch placeable.TextureId {
+			if placeableNames[placeable.Id] != "" {
+				switch placeable.Id {
 				case TALL_GRASS:
 					tint = rl.GetColor(GRASS_TINT)
 				default:
@@ -101,19 +101,19 @@ func InteractWithTile(x, y int) {
 		return
 	}
 
-	if tile.Name == "Soil" && itemName == "Grass Seeds" {
+	if tile.Id == SOIL && itemName == "Grass Seeds" {
 		tileReplacement = tiles[GRASS]
 		tileReplaced = true
 	}
-	if tile.Name == "Grass" && itemCategory == HOE {
+	if tile.Id == GRASS && itemCategory == HOE {
 		tileReplacement = tiles[SOIL]
 		tileReplaced = true
 	}
-	if tile.Name == "Grass" && itemName == "Tall Grass Starter" {
+	if tile.Id == GRASS && itemName == "Tall Grass Starter" {
 		placeableReplacement = placeables[TALL_GRASS]
 		placeableReplaced = true
 	}
-	if (tile.Name == "Grass" || tile.Name == "Soil") && itemName == "Sapling" {
+	if (tile.Id == GRASS || tile.Id == SOIL) && itemName == "Sapling" {
 		placeableReplacement = placeables[TREE]
 		placeableReplaced = true
 	}
@@ -140,6 +140,21 @@ func InteractWithTile(x, y int) {
 	if itemName == "Bridge Tile" {
 		tileReplacement = tiles[BRIDGE]
 		tileReplaced = true
+	}
+
+	if itemName == "Potato Crop" {
+		placeableReplacement = placeables[POTATO_CROP]
+		placeableReplaced = true
+	}
+
+	if itemName == "Carrot Crop" {
+		placeableReplacement = placeables[CARROT_CROP]
+		placeableReplaced = true
+	}
+
+	if itemName == "Wheat Crop" {
+		placeableReplacement = placeables[WHEAT_CROP]
+		placeableReplaced = true
 	}
 
 	if tileReplaced {

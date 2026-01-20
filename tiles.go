@@ -9,37 +9,31 @@ import (
 func LoadTiles() []Tile {
 	var tiles = []Tile{
 		{
-			"-",
-			NONE,
+			0,
 			0,
 			0,
 		},
 		{
-			"Water",
 			WATER,
 			0,
 			0,
 		},
 		{
-			"Soil",
-			NONE,
+			SOIL,
 			0,
 			0,
 		},
 		{
-			"Grass",
-			NONE,
+			GRASS,
 			1,
 			0,
 		},
 		{
-			"Stone",
-			NONE,
+			STONE,
 			0,
 			0,
 		},
 		{
-			"Bridge",
 			BRIDGE,
 			0,
 			0,

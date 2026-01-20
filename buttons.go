@@ -139,7 +139,9 @@ func LoadButtons() {
 					if err != nil {
 						log.Fatal(err)
 					}
-					GenerateSaveFiles(createdSave)
+					GenerateSaveFilesJSON(createdSave)
+					// GenerateSaveFilesBinary(createdSave)
+					UpdateSaveMetadata(createdSave)
 					createdSave.Name = ""
 					createdSave.MapName = ""
 					RefreshSaves()

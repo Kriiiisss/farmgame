@@ -22,7 +22,7 @@ func DrawDebug() {
 	rl.DrawText("Mouse Position:", 2*DEBUG_PADDING, 5*DEBUG_PADDING+3*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
 	rl.DrawText(fmt.Sprintf("> World %.0f %.0f", worldMousePos.X, worldMousePos.Y), 2*DEBUG_PADDING, 6*DEBUG_PADDING+4*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
 	rl.DrawText(fmt.Sprintf("> Tile %.0f %.0f", mouseTilePos.X, mouseTilePos.Y), 2*DEBUG_PADDING, 7*DEBUG_PADDING+5*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
-	rl.DrawText(fmt.Sprintf("> %s, %s", gameMap.Tiles[int(mouseTilePos.Y)][int(mouseTilePos.X)].Name, gameMap.Placeables[int(mouseTilePos.Y)][int(mouseTilePos.X)].Name), 2*DEBUG_PADDING, 8*DEBUG_PADDING+6*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
+	rl.DrawText(fmt.Sprintf("> %s, %s", tileNames[gameMap.Tiles[int(mouseTilePos.Y)][int(mouseTilePos.X)].Id], placeableNames[gameMap.Placeables[int(mouseTilePos.Y)][int(mouseTilePos.X)].Id]), 2*DEBUG_PADDING, 8*DEBUG_PADDING+6*DEBUG_FONTSIZE_SCREEN, DEBUG_FONTSIZE_SCREEN, rl.White)
 
 	rl.BeginMode2D(currentCam)
 

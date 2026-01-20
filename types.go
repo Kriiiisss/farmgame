@@ -7,19 +7,17 @@ import (
 )
 
 type Tile struct {
-	Name      string
-	TextureId int
-	HasGrass  int
-	IsWet     int
+	Id       int16
+	HasGrass int16
+	IsWet    int16
 }
 
 type Placeable struct {
-	Name      string
-	TextureId int
-	AtlasX    int
-	AtlasY    int
-	Width     int
-	Height    int
+	Id     int16
+	AtlasX int16
+	AtlasY int16
+	Width  int16
+	Height int16
 }
 
 type Item struct {

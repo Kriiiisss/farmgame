@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -14,7 +15,7 @@ func GetTilePos(worldPosition rl.Vector2) rl.Vector2 {
 	return rl.Vector2{X: Clamp(float32(Floor(worldPosition.X/TILE_SIZE)), 0, float32(gameMap.Width-1)), Y: Clamp(float32(Floor(worldPosition.Y/TILE_SIZE)), 0, float32(gameMap.Height-1))}
 }
 
-func GenerateSaveFiles(save Save) {
+func GenerateSaveFilesJSON(save Save) {
 	image := rl.LoadImage("./assets/map images/" + save.MapName + ".png")
 
 	savePath := "./saves/" + save.Name
@@ -59,9 +60,63 @@ func GenerateSaveFiles(save Save) {
 		log.Fatal(err)
 	}
 
-	UpdateSaveMetadata(save)
+	fmt.Print("Generated JSON save files for " + `"` + save.Name + `"` + ".\n")
 
-	fmt.Print("Generated save files for " + `"` + save.Name + `"` + ".\n")
+	rl.UnloadImage(image)
+	f1.Close()
+	f2.Close()
+}
+
+func GenerateSaveFilesBinary(save Save) {
+	image := rl.LoadImage("./assets/map images/" + save.MapName + ".png")
+
+	savePath := "./saves/" + save.Name
+	tilesPath := savePath + "/map.json"
+	placeablesPath := savePath + "/placeables.json"
+
+	var loadedTiles [][]Tile
+	var loadedPlaceables [][]Placeable
+
+	for y := range image.Height {
+		loadedTiles = append(loadedTiles, []Tile{})
+		loadedPlaceables = append(loadedPlaceables, []Placeable{})
+		for x := range image.Width {
+			loadedPlaceables[y] = append(loadedPlaceables[y], placeables[NONE])
+			loadedTiles[y] = append(loadedTiles[y], tiles[hexToTileId[uint32(rl.ColorToInt(rl.GetImageColor(*image, x, y)))]])
+		}
+	}
+
+	buf := []byte{}
+
+	bytes, err := binary.Encode(buf, binary.LittleEndian, loadedTiles)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f1, err := os.Create(tilesPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = os.WriteFile(tilesPath, buf, os.ModeAppend)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%d bytes written to tiles file.\n", bytes)
+
+	bytes, err = binary.Encode(buf, binary.LittleEndian, loadedPlaceables)
+	if err != nil {
+		log.Fatal(err)
+	}
+	f2, err := os.Create(placeablesPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = os.WriteFile(placeablesPath, buf, os.ModeAppend)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("%d bytes written to placeables file.\n", bytes)
+
+	fmt.Print("Generated binary save files for " + `"` + save.Name + `"` + ".\n")
 
 	rl.UnloadImage(image)
 	f1.Close()
@@ -188,28 +243,28 @@ func GenerateMeshTileMaps() [][][]int {
 		for x := range gameMap.Width {
 			for i := range 9 {
 				if IsInRange(tilePositions[i][0]+x, 0, gameMap.Width-1) && IsInRange(tilePositions[i][1]+y, 0, gameMap.Height-1) {
-					isStone := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Name == "Stone"
+					isStone := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == STONE
 					if isStone {
 						data[STONE_MESH][i] = 1
 					} else {
 						data[STONE_MESH][i] = 0
 					}
 
-					isSoil := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Name == "Soil" || gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Name == "Grass"
+					isSoil := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == SOIL || gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == GRASS
 					if isSoil {
 						data[SOIL_MESH][i] = 1
 					} else {
 						data[SOIL_MESH][i] = 0
 					}
 
-					isGrass := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Name == "Grass"
+					isGrass := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == GRASS
 					if isGrass {
 						data[GRASS_MESH][i] = 1
 					} else {
 						data[GRASS_MESH][i] = 0
 					}
 
-					isBridge := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Name == "Bridge"
+					isBridge := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == BRIDGE
 					if isBridge {
 						data[BRIDGE_MESH][i] = 1
 					} else {
@@ -272,28 +327,28 @@ func UpdateMeshTileMaps(area rl.Rectangle) {
 		for x := area.X; x < area.X+area.Width-1; x++ {
 			for i := range 9 {
 				if IsInRange(tilePositions[i][0]+int(x), 0, gameMap.Width-1) && IsInRange(tilePositions[i][1]+int(y), 0, gameMap.Height-1) {
-					isStone := (gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Name == "Stone")
+					isStone := (gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == STONE)
 					if isStone {
 						data[STONE_MESH][i] = 1
 					} else {
 						data[STONE_MESH][i] = 0
 					}
 
-					isSoil := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Name == "Soil" || gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Name == "Grass"
+					isSoil := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == SOIL || gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == GRASS
 					if isSoil {
 						data[SOIL_MESH][i] = 1
 					} else {
 						data[SOIL_MESH][i] = 0
 					}
 
-					isGrass := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Name == "Grass"
+					isGrass := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == GRASS
 					if isGrass {
 						data[GRASS_MESH][i] = 1
 					} else {
 						data[GRASS_MESH][i] = 0
 					}
 
-					isBridge := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Name == "Bridge"
+					isBridge := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == BRIDGE
 					if isBridge {
 						data[BRIDGE_MESH][i] = 1
 					} else {
@@ -323,7 +378,7 @@ func UpdateMeshTileMaps(area rl.Rectangle) {
 
 func DrawMap(camera *rl.Camera2D) {
 	tint := rl.White
-	textureId := 0
+	var textureId int16
 	var source rl.Rectangle
 	var destination rl.Rectangle
 	origin := rl.Vector2{X: 0, Y: 0}
@@ -332,7 +387,7 @@ func DrawMap(camera *rl.Camera2D) {
 
 	for y := Clamp(cameraTopLeft.Y-TILES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y < Clamp(cameraBottomRight.Y+TILES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y++ {
 		for x := Clamp(cameraTopLeft.X-TILES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x < Clamp(cameraBottomRight.X+TILES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x++ {
-			textureId = gameMap.Tiles[int(y)][int(x)].TextureId
+			textureId = gameMap.Tiles[int(y)][int(x)].Id
 			source = rl.Rectangle{X: float32(textureId*16) + EPSILON, Y: EPSILON, Width: 16 - 2*EPSILON, Height: 16 - 2*EPSILON}
 			destination = rl.Rectangle{X: x * TILE_SIZE, Y: y * TILE_SIZE, Width: TILE_SIZE, Height: TILE_SIZE}
 			rl.DrawTexturePro(tileAtlas, source, destination, origin, 0, tint)
@@ -382,7 +437,7 @@ func DrawMeshTileMaps(camera *rl.Camera2D) {
 	}
 }
 
-func SaveMap(saveName string) {
+func SaveMapJSON(saveName string) {
 	tilesPath := "./saves/" + saveName + "/map.json"
 	placeablesPath := "./saves/" + saveName + "/placeables.json"
 

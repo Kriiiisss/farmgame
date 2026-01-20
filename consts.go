@@ -42,7 +42,7 @@ var illegalRunes = []rune{
 
 // Basic stuff
 const (
-	NONE                        int     = 0
+	NONE                                = 0
 	TILE_SIZE                   float32 = 32
 	TILES_RENDER_TOLERANCE      float32 = 3
 	PLACEABLES_RENDER_TOLERANCE float32 = 6
@@ -79,10 +79,22 @@ const (
 	VOLUME
 )
 
+var placeableNames = []string{
+	"-",
+	"Tall Grass",
+	"Tree",
+	"Potato Crop",
+	"Carrot Crop",
+	"Wheat Crop",
+}
+
 // Placeables
 const (
-	TALL_GRASS int = 1
-	TREE       int = 2
+	TALL_GRASS = iota + 1
+	TREE
+	POTATO_CROP
+	CARROT_CROP
+	WHEAT_CROP
 )
 
 // HUD Textures
@@ -104,19 +116,27 @@ var hexToTileId = map[uint32]int{
 	0x7a5a00ff: BRIDGE,
 }
 
+var tileNames = []string{
+	"-",
+	"Water",
+	"Soil",
+	"Grass",
+	"Stone",
+	"Bridge",
+}
+
 // Tiles
 const (
-	WATER  = 1
-	SOIL   = 2
-	GRASS  = 3
-	STONE  = 4
-	BRIDGE = 5
+	WATER = iota + 1
+	SOIL
+	GRASS
+	STONE
+	BRIDGE
 )
 
 // Items
 const (
-	NULL = iota
-	IRON_HOE
+	IRON_HOE = iota + 1
 	GRASS_SEEDS
 	TALL_GRASS_STARTER
 	SAPLING
@@ -126,6 +146,9 @@ const (
 	WATER_TILE
 	STONE_TILE
 	BRIDGE_TILE
+	POTATO
+	CARROT
+	WHEAT
 )
 
 // Item categories
