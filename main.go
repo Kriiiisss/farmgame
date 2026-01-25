@@ -47,9 +47,17 @@ var selectedSaveId int
 var loadedSaveId int
 var createdSave Save
 
+var timeOfTheDay int64
+var ambientPlaying bool
+
+var ambient rl.Music
+var click rl.Sound
+
 func main() {
 	rl.SetConfigFlags(rl.FlagMsaa4xHint + rl.FlagVsyncHint + rl.FlagWindowResizable)
 	rl.InitWindow(400, 300, "Farm Game")
+	rl.InitAudioDevice()
+	rl.SetExitKey(0)
 	rl.MaximizeWindow()
 
 	// Main menu
@@ -68,13 +76,25 @@ func main() {
 	items = LoadItems()
 	placeables = loadPlaceables()
 
+	ambient = rl.LoadMusicStream("./assets/sounds/ambient/AMBRurl_Meadow Open Plane Windy Deep Rumble_SYSO_SYSO011-1.ogg")
+	click = rl.LoadSound("./assets/sounds/ui/UIClick_UI Click 33_CB Sounddesign_ACTIVATION2.ogg")
+	background := rl.LoadTexture("./assets/textures/background.png")
+
+	click.Stream.Buffer.Volume = 0.1
+
+	ambient.Stream.Buffer.Looping = true
+	ambient.Stream.Buffer.Volume = 0.2
+
 	for !rl.WindowShouldClose() {
 		createdSave.MapName = "map1"
 		if clientState == MAIN_MENU {
 			UpdateMainMenu()
+			background.Width = int32(rl.GetRenderWidth())
+			background.Height = int32(rl.GetRenderHeight())
 			rl.BeginDrawing()
 
 			rl.ClearBackground(rl.Black)
+			rl.DrawTexture(background, 0, 0, rl.White)
 			DrawMainMenu()
 
 			rl.EndDrawing()
@@ -103,6 +123,12 @@ func main() {
 			if clientState == IN_A_WORLD {
 				worldMousePos = rl.GetScreenToWorld2D(rl.GetMousePosition(), currentCam)
 				mouseTilePos = GetTilePos(worldMousePos)
+
+				rl.UpdateMusicStream(ambient)
+				if !ambientPlaying {
+					rl.PlayMusicStream(ambient)
+					ambientPlaying = true
+				}
 
 				if rl.IsKeyPressed(rl.KeyF5) {
 					playerCamOn = !playerCamOn
@@ -151,5 +177,6 @@ func main() {
 		SaveMapJSON(saves[loadedSaveId].Name)
 		UpdateSaveMetadata(saves[loadedSaveId])
 	}
+	rl.CloseAudioDevice()
 	rl.CloseWindow()
 }

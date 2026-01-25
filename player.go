@@ -142,17 +142,17 @@ func InteractWithTile(x, y int) {
 		tileReplaced = true
 	}
 
-	if itemName == "Potato Crop" {
+	if itemName == "Potato Crop" && tile.Id == SOIL {
 		placeableReplacement = placeables[POTATO_CROP]
 		placeableReplaced = true
 	}
 
-	if itemName == "Carrot Crop" {
+	if itemName == "Carrot Crop" && tile.Id == SOIL {
 		placeableReplacement = placeables[CARROT_CROP]
 		placeableReplaced = true
 	}
 
-	if itemName == "Wheat Crop" {
+	if itemName == "Wheat Crop" && tile.Id == SOIL {
 		placeableReplacement = placeables[WHEAT_CROP]
 		placeableReplaced = true
 	}

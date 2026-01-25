@@ -16,6 +16,7 @@ func LoadButtons() {
 			"Manage Worlds",
 			0,
 			func() {
+				rl.PlaySound(click)
 				menuSection = MANAGE_WORLDS
 				worldsSection = MNGWORLD_WELCOME
 				RefreshSaves()
@@ -28,6 +29,7 @@ func LoadButtons() {
 			"Options",
 			0,
 			func() {
+				rl.PlaySound(click)
 				menuSection = OPTIONS
 			},
 			rl.Rectangle{},
@@ -40,6 +42,7 @@ func LoadButtons() {
 			"Create New World",
 			0,
 			func() {
+				rl.PlaySound(click)
 				worldsSection = CREATE_NEW_WORLD
 			},
 			rl.Rectangle{},
@@ -51,6 +54,7 @@ func LoadButtons() {
 			0,
 			func() {
 				if selectedSaveId != -1 {
+					rl.PlaySound(click)
 					clientState = LOADING_TO_WORLD
 					loadedSaveId = selectedSaveId
 					UpdateSaveMetadata(saves[loadedSaveId])
@@ -64,6 +68,7 @@ func LoadButtons() {
 			"Delete World",
 			0,
 			func() {
+				rl.PlaySound(click)
 				worldsSection = DELETE_WORLD
 			},
 			rl.Rectangle{},
@@ -74,6 +79,7 @@ func LoadButtons() {
 			"Refresh",
 			0,
 			func() {
+				rl.PlaySound(click)
 				RefreshSaves()
 			},
 			rl.Rectangle{},
@@ -86,6 +92,7 @@ func LoadButtons() {
 			"Volume",
 			0,
 			func() {
+				rl.PlaySound(click)
 				optionsSection = VOLUME
 			},
 			rl.Rectangle{},
@@ -98,6 +105,7 @@ func LoadButtons() {
 			"Delete",
 			0,
 			func() {
+				rl.PlaySound(click)
 				err := os.RemoveAll("./saves/" + saves[selectedSaveId].Name)
 				if err != nil {
 					log.Fatal(err)
@@ -113,6 +121,7 @@ func LoadButtons() {
 			"Cancel",
 			0,
 			func() {
+				rl.PlaySound(click)
 				worldsSection = MNGWORLD_WELCOME
 			},
 			rl.Rectangle{},
@@ -125,6 +134,7 @@ func LoadButtons() {
 			"Create",
 			0,
 			func() {
+				rl.PlaySound(click)
 				nameIllegal := slices.Contains(illegalNames, createdSave.Name)
 				if len(saves) > 0 {
 					for saveId := range saves {
@@ -156,6 +166,7 @@ func LoadButtons() {
 			"Cancel",
 			0,
 			func() {
+				rl.PlaySound(click)
 				createdSave.Name = ""
 				createdSave.MapName = ""
 				worldsSection = MNGWORLD_WELCOME

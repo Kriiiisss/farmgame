@@ -74,7 +74,9 @@ func RefreshSaves() {
 			Button{
 				dirEntries[dirEntry].Name(),
 				int32(rl.GetRenderHeight()) / 28,
-				func() {},
+				func() {
+					rl.PlaySound(click)
+				},
 				rl.Rectangle{},
 				false,
 				true,
