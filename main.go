@@ -76,17 +76,17 @@ func main() {
 	items = LoadItems()
 	placeables = loadPlaceables()
 
-	ambient = rl.LoadMusicStream("./assets/sounds/ambient/AMBRurl_Meadow Open Plane Windy Deep Rumble_SYSO_SYSO011-1.ogg")
-	click = rl.LoadSound("./assets/sounds/ui/UIClick_UI Click 33_CB Sounddesign_ACTIVATION2.ogg")
 	background := rl.LoadTexture("./assets/textures/background.png")
 
+	click = rl.LoadSound("./assets/sounds/ui/UIClick_UI Click 33_CB Sounddesign_ACTIVATION2.ogg")
 	click.Stream.Buffer.Volume = 0.1
 
+	ambient = rl.LoadMusicStream("./assets/sounds/ambient/AMBRurl_Meadow Open Plane Windy Deep Rumble_SYSO_SYSO011-1.ogg")
 	ambient.Stream.Buffer.Looping = true
-	ambient.Stream.Buffer.Volume = 0.2
+	ambient.Stream.Buffer.Volume = 0.4
 
 	for !rl.WindowShouldClose() {
-		createdSave.MapName = "map1"
+		createdSave.MapName = "map"
 		if clientState == MAIN_MENU {
 			UpdateMainMenu()
 			background.Width = int32(rl.GetRenderWidth())
@@ -94,7 +94,10 @@ func main() {
 			rl.BeginDrawing()
 
 			rl.ClearBackground(rl.Black)
-			rl.DrawTexture(background, 0, 0, rl.White)
+			if menuSection == WELCOME {
+				rl.DrawTexture(background, 0, 0, rl.White)
+			}
+
 			DrawMainMenu()
 
 			rl.EndDrawing()

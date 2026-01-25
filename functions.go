@@ -37,7 +37,7 @@ func Ceil(number float32) int {
 
 func HandleTextInput(text *string, maxLength int) {
 	character := rl.GetCharPressed()
-	if character != 0 && !slices.Contains(illegalRunes, rune(character)) && len(*text) < 48 {
+	if character != 0 && !slices.Contains(illegalRunes, rune(character)) && len(*text)+1 <= maxLength {
 		*text += string(character)
 	}
 	if rl.GetKeyPressed() == rl.KeyBackspace {
