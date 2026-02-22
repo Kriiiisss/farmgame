@@ -127,3 +127,14 @@ func UpdateSaveMetadata(save Save) {
 
 	metadataFile.Close()
 }
+
+func HandleAnimations() {
+	player.AnimationTimer += frameTime
+	if player.AnimationTimer >= ANIMATION_DURATION {
+		player.AnimationTimer = 0
+		player.AnimationFrame++
+		if player.AnimationFrame >= ANIMATION_FRAMES {
+			player.AnimationFrame = 0
+		}
+	}
+}

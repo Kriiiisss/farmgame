@@ -28,16 +28,6 @@ func LoadTiles() []Tile {
 			1,
 			0,
 		},
-		{
-			STONE,
-			0,
-			0,
-		},
-		{
-			BRIDGE,
-			0,
-			0,
-		},
 	}
 
 	fmt.Printf("Loaded Tiles!\n")

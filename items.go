@@ -50,16 +50,6 @@ func LoadItems() []Item {
 			WATER_TILE,
 		},
 		{
-			"Stone Tile",
-			OVERWRITE_TILE,
-			STONE_TILE,
-		},
-		{
-			"Bridge Tile",
-			OVERWRITE_TILE,
-			BRIDGE_TILE,
-		},
-		{
 			"Potato Crop",
 			OVERWRITE_PLACEABLE,
 			POTATO,
@@ -97,6 +87,4 @@ func LoadInventory() {
 	player.Inventory[9] = items[GRASS_TILE]
 	player.Inventory[10] = items[SOIL_TILE]
 	player.Inventory[11] = items[WATER_TILE]
-	player.Inventory[12] = items[STONE_TILE]
-	player.Inventory[13] = items[BRIDGE_TILE]
 }

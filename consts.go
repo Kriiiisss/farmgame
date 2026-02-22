@@ -50,6 +50,8 @@ const (
 	EPSILON                     float32 = 0.125
 	GRASS_TINT                          = 0x91bd59ff
 	SQRT2                       float32 = 1.41421356
+	ANIMATION_DURATION          float32 = 0.1
+	ANIMATION_FRAMES            int     = 4
 )
 
 // Client states
@@ -97,6 +99,21 @@ const (
 	WHEAT_CROP
 )
 
+// Animations
+const (
+	IDLE = iota
+	WALK
+	RUN
+)
+
+// Directions (clockwise)
+const (
+	BACK = iota
+	RIGHT
+	FRONT
+	LEFT
+)
+
 // HUD Textures
 const (
 	INDEX_TEXTURE_ID = iota
@@ -111,9 +128,7 @@ const (
 var hexToTileId = map[uint32]int{
 	0x5c4300ff: SOIL,
 	0x99e550ff: GRASS,
-	0x959491ff: STONE,
 	0x5cfff8ff: WATER,
-	0x7a5a00ff: BRIDGE,
 }
 
 var tileNames = []string{
@@ -121,8 +136,6 @@ var tileNames = []string{
 	"Water",
 	"Soil",
 	"Grass",
-	"Stone",
-	"Bridge",
 }
 
 // Tiles
@@ -130,8 +143,6 @@ const (
 	WATER = iota + 1
 	SOIL
 	GRASS
-	STONE
-	BRIDGE
 )
 
 // Items
@@ -144,8 +155,6 @@ const (
 	GRASS_TILE
 	SOIL_TILE
 	WATER_TILE
-	STONE_TILE
-	BRIDGE_TILE
 	POTATO
 	CARROT
 	WHEAT
@@ -153,22 +162,21 @@ const (
 
 // Item categories
 const (
-	SOIL_SEED           = 1
-	TILLED_SOIL_SEED    = 2
-	GRASS_PLANT         = 3
-	HOE                 = 4
-	SHOVEL              = 5
-	OVERWRITE_TILE      = 6
-	OVERWRITE_PLACEABLE = 7
+	SOIL_SEED = iota + 1
+	TILLED_SOIL_SEED
+	GRASS_PLANT
+	HOE
+	SHOVEL
+	OVERWRITE_TILE
+	OVERWRITE_PLACEABLE
 )
 
 // Mesh tile maps
-const MESH_COUNT = 4
+const MESH_COUNT = 3
 const (
-	SOIL_MESH = iota
-	STONE_MESH
+	WATER_MESH = iota
+	SOIL_MESH
 	GRASS_MESH
-	BRIDGE_MESH
 )
 
 // Debug dimensions

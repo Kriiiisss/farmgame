@@ -4,13 +4,16 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
+var frameTime float32
+
 var meshAtlases []rl.Texture2D
 var atlasNames []string
-var tileAtlas rl.Texture2D
+
+// var tileAtlas rl.Texture2D
 var itemAtlas rl.Texture2D
 var HUDAtlas rl.Texture2D
 var placeableAtlas rl.Texture2D
-var playerTexture rl.Texture2D
+var playerAtlases []rl.Texture2D
 
 var tiles []Tile
 var items []Item
@@ -67,16 +70,17 @@ func main() {
 	worldsSection = -1
 
 	// Assets
-	tileAtlas = rl.LoadTexture("./assets/textures/tile_atlas.png")
+	// tileAtlas = rl.LoadTexture("./assets/textures/tile_atlas.png")
 	itemAtlas = rl.LoadTexture("./assets/textures/item_atlas.png")
 	HUDAtlas = rl.LoadTexture("./assets/textures/hud_atlas.png")
 	placeableAtlas = rl.LoadTexture("./assets/textures/placeable_atlas.png")
-	atlasNames = []string{"soil", "stone", "grass", "bridge"}
+	atlasNames = []string{"water", "soil", "grass"}
 	meshAtlases = LoadMeshAtlases()
+	playerAtlases = LoadPlayerAtlases()
+
 	tiles = LoadTiles()
 	items = LoadItems()
 	placeables = LoadPlaceables()
-	playerTexture = rl.LoadTexture("./assets/textures/player.png")
 
 	background := rl.LoadTexture("./assets/textures/background.png")
 
@@ -88,6 +92,7 @@ func main() {
 	ambient.Stream.Buffer.Volume = 0.4
 
 	for !rl.WindowShouldClose() {
+		frameTime = rl.GetFrameTime()
 		createdSave.MapName = "map"
 		if clientState == MAIN_MENU {
 			UpdateMainMenu()
@@ -149,6 +154,7 @@ func main() {
 				}
 
 				HandlePlayerMovement()
+				HandleAnimations()
 				HandleCamera(&playerCam)
 				HandleInventory()
 
@@ -162,11 +168,10 @@ func main() {
 				rl.BeginMode2D(currentCam)
 
 				rl.ClearBackground(rl.Black)
-				DrawMap(&playerCam)
+				// DrawMap(&playerCam)
 				DrawMeshTileMaps(&playerCam)
 				HighlightTile(&currentCam)
-				DrawPlayer(&currentCam)
-				DrawPlaceables(&currentCam)
+				DrawPlaceablesAndPlayer(&currentCam)
 
 				rl.EndMode2D()
 

@@ -31,6 +31,7 @@ type Player struct {
 	ModelName         string
 	TimePlayed        float64
 	MovementSpeed     float32
+	MovementState     int
 	Height            float32
 	Width             float32
 	WorldPosition     rl.Vector2
@@ -38,6 +39,9 @@ type Player struct {
 	AvailableInvSlots int
 	SelectedSlot      int
 	SelectedHotbar    int
+	Direction         rl.Vector2
+	AnimationTimer    float32
+	AnimationFrame    int
 }
 
 type Map struct {

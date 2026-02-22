@@ -243,11 +243,11 @@ func GenerateMeshTileMaps() [][][]int {
 		for x := range gameMap.Width {
 			for i := range 9 {
 				if IsInRange(tilePositions[i][0]+x, 0, gameMap.Width-1) && IsInRange(tilePositions[i][1]+y, 0, gameMap.Height-1) {
-					isStone := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == STONE
-					if isStone {
-						data[STONE_MESH][i] = 1
+					isWater := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == WATER
+					if isWater {
+						data[WATER_MESH][i] = 1
 					} else {
-						data[STONE_MESH][i] = 0
+						data[WATER_MESH][i] = 0
 					}
 
 					isSoil := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == SOIL || gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == GRASS
@@ -264,17 +264,10 @@ func GenerateMeshTileMaps() [][][]int {
 						data[GRASS_MESH][i] = 0
 					}
 
-					isBridge := gameMap.Tiles[tilePositions[i][1]+y][tilePositions[i][0]+x].Id == BRIDGE
-					if isBridge {
-						data[BRIDGE_MESH][i] = 1
-					} else {
-						data[BRIDGE_MESH][i] = 0
-					}
 				} else {
-					data[STONE_MESH][i] = 0
+					data[WATER_MESH][i] = 0
 					data[SOIL_MESH][i] = 0
 					data[GRASS_MESH][i] = 0
-					data[BRIDGE_MESH][i] = 0
 				}
 			}
 			for mapId := range MESH_COUNT {
@@ -327,11 +320,11 @@ func UpdateMeshTileMaps(area rl.Rectangle) {
 		for x := area.X; x < area.X+area.Width-1; x++ {
 			for i := range 9 {
 				if IsInRange(tilePositions[i][0]+int(x), 0, gameMap.Width-1) && IsInRange(tilePositions[i][1]+int(y), 0, gameMap.Height-1) {
-					isStone := (gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == STONE)
-					if isStone {
-						data[STONE_MESH][i] = 1
+					isWater := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == WATER
+					if isWater {
+						data[WATER_MESH][i] = 1
 					} else {
-						data[STONE_MESH][i] = 0
+						data[WATER_MESH][i] = 0
 					}
 
 					isSoil := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == SOIL || gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == GRASS
@@ -347,18 +340,10 @@ func UpdateMeshTileMaps(area rl.Rectangle) {
 					} else {
 						data[GRASS_MESH][i] = 0
 					}
-
-					isBridge := gameMap.Tiles[tilePositions[i][1]+int(y)][tilePositions[i][0]+int(x)].Id == BRIDGE
-					if isBridge {
-						data[BRIDGE_MESH][i] = 1
-					} else {
-						data[BRIDGE_MESH][i] = 0
-					}
 				} else {
-					data[STONE_MESH][i] = 0
+					data[WATER_MESH][i] = 0
 					data[SOIL_MESH][i] = 0
 					data[GRASS_MESH][i] = 0
-					data[BRIDGE_MESH][i] = 0
 				}
 			}
 			for mapId := range MESH_COUNT {
@@ -376,24 +361,24 @@ func UpdateMeshTileMaps(area rl.Rectangle) {
 	}
 }
 
-func DrawMap(camera *rl.Camera2D) {
-	tint := rl.White
-	var textureId int16
-	var source rl.Rectangle
-	var destination rl.Rectangle
-	origin := rl.Vector2{X: 0, Y: 0}
-	cameraTopLeft := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: 0, Y: 0}, *camera))
-	cameraBottomRight := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: float32(rl.GetRenderWidth() - 1), Y: float32(rl.GetRenderHeight() - 1)}, *camera))
+// func DrawMap(camera *rl.Camera2D) {
+// 	tint := rl.White
+// 	var textureId int16
+// 	var source rl.Rectangle
+// 	var destination rl.Rectangle
+// 	origin := rl.Vector2{X: 0, Y: 0}
+// 	cameraTopLeft := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: 0, Y: 0}, *camera))
+// 	cameraBottomRight := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: float32(rl.GetRenderWidth() - 1), Y: float32(rl.GetRenderHeight() - 1)}, *camera))
 
-	for y := Clamp(cameraTopLeft.Y-TILES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y < Clamp(cameraBottomRight.Y+TILES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y++ {
-		for x := Clamp(cameraTopLeft.X-TILES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x < Clamp(cameraBottomRight.X+TILES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x++ {
-			textureId = gameMap.Tiles[int(y)][int(x)].Id
-			source = rl.Rectangle{X: float32(textureId*16) + EPSILON, Y: EPSILON, Width: 16 - 2*EPSILON, Height: 16 - 2*EPSILON}
-			destination = rl.Rectangle{X: x * TILE_SIZE, Y: y * TILE_SIZE, Width: TILE_SIZE, Height: TILE_SIZE}
-			rl.DrawTexturePro(tileAtlas, source, destination, origin, 0, tint)
-		}
-	}
-}
+// 	for y := Clamp(cameraTopLeft.Y-TILES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y < Clamp(cameraBottomRight.Y+TILES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y++ {
+// 		for x := Clamp(cameraTopLeft.X-TILES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x < Clamp(cameraBottomRight.X+TILES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x++ {
+// 			textureId = gameMap.Tiles[int(y)][int(x)].Id
+// 			source = rl.Rectangle{X: float32(textureId*16) + EPSILON, Y: EPSILON, Width: 16 - 2*EPSILON, Height: 16 - 2*EPSILON}
+// 			destination = rl.Rectangle{X: x * TILE_SIZE, Y: y * TILE_SIZE, Width: TILE_SIZE, Height: TILE_SIZE}
+// 			rl.DrawTexturePro(tileAtlas, source, destination, origin, 0, tint)
+// 		}
+// 	}
+// }
 
 func DrawMeshTileMaps(camera *rl.Camera2D) {
 	// Positions of tilemap segments in a human-readable 4x4 atlas

@@ -8,71 +8,103 @@ import (
 
 func LoadPlayer() Player {
 	var player = Player{
-		"Freak",
-		"player",
-		0,
-		10,
-		1.8,
-		0.8,
-		rl.Vector2{X: float32(gameMap.Width) * TILE_SIZE * 0.5, Y: float32(gameMap.Height) * TILE_SIZE * 0.5},
-		[MAX_INVENTORY_SIZE]Item{},
-		MAX_INVENTORY_SIZE,
-		0,
-		0,
+		Nickname:          "Freak",
+		ModelName:         "player",
+		TimePlayed:        0,
+		MovementSpeed:     10,
+		MovementState:     IDLE,
+		Height:            0.8,
+		Width:             0.8,
+		WorldPosition:     rl.Vector2{X: float32(gameMap.Width) * TILE_SIZE * 0.5, Y: float32(gameMap.Height) * TILE_SIZE * 0.5},
+		Inventory:         [MAX_INVENTORY_SIZE]Item{},
+		AvailableInvSlots: MAX_INVENTORY_SIZE,
+		SelectedSlot:      0,
+		SelectedHotbar:    0,
+		Direction:         rl.Vector2{X: 0, Y: 1},
+		AnimationTimer:    0.0,
 	}
 
 	return player
 }
 
-func DrawPlayer(camera *rl.Camera2D) {
-	var source = rl.Rectangle{X: 0 + EPSILON, Y: 0 + EPSILON, Width: float32(playerTexture.Width) - 2*EPSILON, Height: float32(playerTexture.Height) - 2*EPSILON}
-	var destination = rl.Rectangle{X: player.WorldPosition.X - TILE_SIZE, Y: player.WorldPosition.Y - 2*TILE_SIZE, Width: 2 * TILE_SIZE, Height: 2 * TILE_SIZE}
-	var origin = rl.Vector2{X: 0, Y: 0}
+func LoadPlayerAtlases() []rl.Texture2D {
+	var playerAtlases = []rl.Texture2D{
+		rl.LoadTexture("./assets/models/player/idle.png"),
+		rl.LoadTexture("./assets/models/player/walk.png"),
+		rl.LoadTexture("./assets/models/player/run.png"),
+	}
 
-	rl.DrawTexturePro(playerTexture, source, destination, origin, 0.0, rl.White)
+	return playerAtlases
 }
 
-func DrawPlaceables(camera *rl.Camera2D) {
-	var tint rl.Color
-	var source rl.Rectangle
-	var destination rl.Rectangle
-	var origin = rl.Vector2{X: 0, Y: 0}
-	cameraTopLeft := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: 0, Y: 0}, *camera))
-	cameraBottomRight := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: float32(rl.GetRenderWidth() - 1), Y: float32(rl.GetRenderHeight() - 1)}, *camera))
+func DrawPlayer(camera *rl.Camera2D) {
+	var atlasId int = player.MovementState
+	var directionId int                     // vertical
+	var frameId int = player.AnimationFrame // horizontal
 
-	for y := Clamp(cameraTopLeft.Y-PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y < Clamp(cameraBottomRight.Y+PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y++ {
-		for x := Clamp(cameraTopLeft.X-PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x < Clamp(cameraBottomRight.X+PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x++ {
-			placeable := gameMap.Placeables[int(y)][int(x)]
-			if placeableNames[placeable.Id] != "" {
-				switch placeable.Id {
-				case TALL_GRASS:
-					tint = rl.GetColor(GRASS_TINT)
-				default:
-					tint = rl.White
+	switch player.Direction.X {
+	case -1:
+		{
+			directionId = LEFT
+			break
+		}
+	case 1:
+		{
+			directionId = RIGHT
+			break
+		}
+	default:
+		{
+			switch player.Direction.Y {
+			case -1:
+				{
+					directionId = BACK
+					break
 				}
-				source = rl.Rectangle{X: float32(placeable.AtlasX) + EPSILON, Y: float32(placeable.AtlasY) + EPSILON, Width: float32(placeable.Width) - 2*EPSILON, Height: float32(placeable.Height) - 2*EPSILON}
-				destination = rl.Rectangle{X: x*TILE_SIZE - (float32(placeable.Width)-TILE_SIZE)*0.5, Y: y*TILE_SIZE - float32(placeable.Height) + TILE_SIZE, Width: float32(placeable.Width), Height: float32(placeable.Height)}
-				rl.DrawTexturePro(placeableAtlas, source, destination, origin, 0, tint)
+			case 1:
+				{
+					directionId = FRONT
+					break
+				}
+			default:
+				{
+					directionId = FRONT
+				}
 			}
 		}
 	}
+
+	var source = rl.Rectangle{X: float32(frameId*32) + EPSILON, Y: float32(directionId*32) + EPSILON, Width: 32 - 2*EPSILON, Height: 32 - 2*EPSILON}
+	var destination = rl.Rectangle{X: player.WorldPosition.X - TILE_SIZE, Y: player.WorldPosition.Y - 2*TILE_SIZE, Width: 2 * TILE_SIZE, Height: 2 * TILE_SIZE}
+	var origin = rl.Vector2{X: 0, Y: 0}
+
+	rl.DrawTexturePro(playerAtlases[atlasId], source, destination, origin, 0.0, rl.White)
 }
 
 func HandlePlayerMovement() {
 	var movement = rl.Vector2{X: 0, Y: 0}
 
 	if rl.IsKeyDown(rl.KeyW) {
-		movement.Y -= player.MovementSpeed
+		movement.Y--
 	}
 	if rl.IsKeyDown(rl.KeyA) {
-		movement.X -= player.MovementSpeed
+		movement.X--
 	}
 	if rl.IsKeyDown(rl.KeyS) {
-		movement.Y += player.MovementSpeed
+		movement.Y++
 	}
 	if rl.IsKeyDown(rl.KeyD) {
-		movement.X += player.MovementSpeed
+		movement.X++
 	}
+
+	if movement.X != 0 || movement.Y != 0 {
+		player.Direction = movement
+		player.MovementState = WALK
+	} else {
+		player.MovementState = IDLE
+	}
+
+	movement = rl.Vector2{X: movement.X * player.MovementSpeed, Y: movement.Y * player.MovementSpeed}
 
 	if movement.X != 0 && movement.Y != 0 {
 		movement.X = movement.X / SQRT2
@@ -131,14 +163,6 @@ func InteractWithTile(x, y int) {
 	}
 	if itemName == "Water Tile" {
 		tileReplacement = tiles[WATER]
-		tileReplaced = true
-	}
-	if itemName == "Stone Tile" {
-		tileReplacement = tiles[STONE]
-		tileReplaced = true
-	}
-	if itemName == "Bridge Tile" {
-		tileReplacement = tiles[BRIDGE]
 		tileReplaced = true
 	}
 
