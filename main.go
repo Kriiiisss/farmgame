@@ -10,6 +10,7 @@ var tileAtlas rl.Texture2D
 var itemAtlas rl.Texture2D
 var HUDAtlas rl.Texture2D
 var placeableAtlas rl.Texture2D
+var playerTexture rl.Texture2D
 
 var tiles []Tile
 var items []Item
@@ -74,7 +75,8 @@ func main() {
 	meshAtlases = LoadMeshAtlases()
 	tiles = LoadTiles()
 	items = LoadItems()
-	placeables = loadPlaceables()
+	placeables = LoadPlaceables()
+	playerTexture = rl.LoadTexture("./assets/textures/player.png")
 
 	background := rl.LoadTexture("./assets/textures/background.png")
 
@@ -163,7 +165,8 @@ func main() {
 				DrawMap(&playerCam)
 				DrawMeshTileMaps(&playerCam)
 				HighlightTile(&currentCam)
-				DrawPlaceablesAndPlayer(&currentCam)
+				DrawPlayer(&currentCam)
+				DrawPlaceables(&currentCam)
 
 				rl.EndMode2D()
 

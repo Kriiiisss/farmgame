@@ -1,6 +1,6 @@
 package main
 
-func loadPlaceables() []Placeable {
+func LoadPlaceables() []Placeable {
 	var placeables = []Placeable{
 		{
 			Id:     0,

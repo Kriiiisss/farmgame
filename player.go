@@ -24,23 +24,23 @@ func LoadPlayer() Player {
 	return player
 }
 
-func DrawPlaceablesAndPlayer(camera *rl.Camera2D) {
+func DrawPlayer(camera *rl.Camera2D) {
+	var source = rl.Rectangle{X: 0 + EPSILON, Y: 0 + EPSILON, Width: float32(playerTexture.Width) - 2*EPSILON, Height: float32(playerTexture.Height) - 2*EPSILON}
+	var destination = rl.Rectangle{X: player.WorldPosition.X - TILE_SIZE, Y: player.WorldPosition.Y - 2*TILE_SIZE, Width: 2 * TILE_SIZE, Height: 2 * TILE_SIZE}
+	var origin = rl.Vector2{X: 0, Y: 0}
+
+	rl.DrawTexturePro(playerTexture, source, destination, origin, 0.0, rl.White)
+}
+
+func DrawPlaceables(camera *rl.Camera2D) {
 	var tint rl.Color
 	var source rl.Rectangle
 	var destination rl.Rectangle
 	var origin = rl.Vector2{X: 0, Y: 0}
 	cameraTopLeft := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: 0, Y: 0}, *camera))
 	cameraBottomRight := GetTilePos(rl.GetScreenToWorld2D(rl.Vector2{X: float32(rl.GetRenderWidth() - 1), Y: float32(rl.GetRenderHeight() - 1)}, *camera))
-	playerY := GetTilePos(player.WorldPosition).Y
 
-	// Draw player as a black rectangle
-	rl.DrawRectangle(int32(player.WorldPosition.X-player.Width*0.5*TILE_SIZE), int32(player.WorldPosition.Y-player.Height*TILE_SIZE), int32(player.Width*TILE_SIZE), int32(player.Height*TILE_SIZE), rl.Black)
-
-	// Draw placeables
 	for y := Clamp(cameraTopLeft.Y-PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y < Clamp(cameraBottomRight.Y+PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Height)); y++ {
-		if y == playerY {
-			rl.DrawRectangle(int32(player.WorldPosition.X-player.Width*0.5*TILE_SIZE), int32(player.WorldPosition.Y-player.Height*TILE_SIZE), int32(player.Width*TILE_SIZE), int32(player.Height*TILE_SIZE), rl.Black)
-		}
 		for x := Clamp(cameraTopLeft.X-PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x < Clamp(cameraBottomRight.X+PLACEABLES_RENDER_TOLERANCE, 0, float32(gameMap.Width)); x++ {
 			placeable := gameMap.Placeables[int(y)][int(x)]
 			if placeableNames[placeable.Id] != "" {

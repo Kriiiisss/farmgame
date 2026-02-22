@@ -75,7 +75,10 @@ func UpdateMainMenu() {
 		}
 
 		if rl.CheckCollisionPointRec(mousePos, welcomeButtons[button].Hitbox) {
-			welcomeButtons[button].Hovered = true
+			if !welcomeButtons[button].Hovered {
+				welcomeButtons[button].Hovered = true
+			}
+
 			if rl.IsMouseButtonPressed(rl.MouseButtonLeft) && welcomeButtons[button].Available {
 				welcomeButtons[button].Click()
 			}
