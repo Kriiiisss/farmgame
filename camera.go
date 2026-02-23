@@ -12,7 +12,7 @@ func LoadPlayerCam() rl.Camera2D {
 	camera.Target = rl.Vector2{X: float32(player.WorldPosition.X), Y: float32(player.WorldPosition.Y)}
 	camera.Offset = rl.Vector2{X: float32(rl.GetRenderWidth() / 2), Y: float32(rl.GetRenderHeight() / 2)}
 	camera.Rotation = 0.0
-	camera.Zoom = 2.0
+	camera.Zoom = 4.0
 
 	return camera
 }
@@ -37,6 +37,6 @@ func HandleCamera(camera *rl.Camera2D) {
 	if rl.GetMouseWheelMove() != 0 {
 		camera.Offset = rl.Vector2{X: float32(rl.GetRenderWidth() / 2), Y: float32(rl.GetRenderHeight() / 2)}
 		camera.Zoom = float32(math.Exp(float64(math.Log(float64(camera.Zoom)) + float64(rl.GetMouseWheelMove()*0.1))))
-		camera.Zoom = Clamp(camera.Zoom, 1.5, 4.0)
+		camera.Zoom = Clamp(camera.Zoom, 3.0, 8.0)
 	}
 }

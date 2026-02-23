@@ -43,7 +43,7 @@ var illegalRunes = []rune{
 // Basic stuff
 const (
 	NONE                                = 0
-	TILE_SIZE                   float32 = 32
+	TILE_SIZE                   float32 = 16
 	TILES_RENDER_TOLERANCE      float32 = 3
 	PLACEABLES_RENDER_TOLERANCE float32 = 6
 	MAX_INVENTORY_SIZE          int     = 27

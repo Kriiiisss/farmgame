@@ -9,7 +9,7 @@ var frameTime float32
 var meshAtlases []rl.Texture2D
 var atlasNames []string
 
-// var tileAtlas rl.Texture2D
+var tileAtlas rl.Texture2D
 var itemAtlas rl.Texture2D
 var HUDAtlas rl.Texture2D
 var placeableAtlas rl.Texture2D
@@ -70,7 +70,6 @@ func main() {
 	worldsSection = -1
 
 	// Assets
-	// tileAtlas = rl.LoadTexture("./assets/textures/tile_atlas.png")
 	itemAtlas = rl.LoadTexture("./assets/textures/item_atlas.png")
 	HUDAtlas = rl.LoadTexture("./assets/textures/hud_atlas.png")
 	placeableAtlas = rl.LoadTexture("./assets/textures/placeable_atlas.png")
@@ -168,7 +167,6 @@ func main() {
 				rl.BeginMode2D(currentCam)
 
 				rl.ClearBackground(rl.Black)
-				// DrawMap(&playerCam)
 				DrawMeshTileMaps(&playerCam)
 				HighlightTile(&currentCam)
 				DrawPlaceablesAndPlayer(&currentCam)
